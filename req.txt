@@ -1,0 +1,9 @@
+transformers
+sentencepiece
+timm
+packaging==24.1
+pygit2==1.15.1
+aliyun-python-sdk-core
+gradio
+modelscope==1.11.0
+numpy==1.26.0
