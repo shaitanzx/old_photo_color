@@ -29,7 +29,7 @@ Once launched, you will see an interface that has 4 tabs.
 
 <table>
   <tr>
-    <td><a href="https://colab.research.google.com/github/shaitanzx/old_photo_color/blob/main/old_photo_restore.ipynb" rel="nofollow"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" data-canonical-src="https://colab.research.google.com/assets/colab-badge.svg"></a></td><td>Old Photo Color Colab version</td>
+    <td><a href="https://colab.research.google.com/github/shaitanzx/old_photo_color/blob/main/old_photo_color.ipynb" rel="nofollow"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" data-canonical-src="https://colab.research.google.com/assets/colab-badge.svg"></a></td><td>Old Photo Color Colab version</td>
   </tr>
 </table>
 
