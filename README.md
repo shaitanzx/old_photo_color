@@ -9,7 +9,7 @@ The pre-trained modelcope/iic/cv_ddcolor_image-colorization model is used as the
 
 **Launch**. If you will run it on a local machine, you can safely skip this point.
 
-![image](https://github.com/user-attachments/assets/43b483a2-8b6e-4f08-8a1b-416f399873e0)
+![image](https://github.com/user-attachments/assets/e35fbc48-1b5f-4b56-a137-5045614ed60a)
 
 Here you can choose where the processed images will be saved - Google Disk or Google Colab space. In the first case you will save to the old_photo_color_output folder in the root of your Google Disk. Otherwise, it will be saved to the Google Colab space output folder, but you will be able to download the finished files from the interface to your desktop.
 
@@ -17,7 +17,7 @@ Here you can choose where the processed images will be saved - Google Disk or Go
 
 Once launched, you will see an interface that has 4 tabs.
 
-![image](https://github.com/user-attachments/assets/a834d70a-81cf-47e9-898c-d2c2ae5d7022)
+![image](https://github.com/user-attachments/assets/be7fcc06-98ce-4539-bafb-f609d9846183)
 
 **Single** - Designed to work with single files.
 
