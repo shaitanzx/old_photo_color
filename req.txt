@@ -7,3 +7,4 @@ aliyun-python-sdk-core
 gradio
 modelscope==1.11.0
 numpy==1.26.0
+lpips

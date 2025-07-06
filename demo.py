@@ -386,7 +386,7 @@ with gr.Blocks(title=f"Old Photo Color {version.version}",js=js_func) as demo:
                     gr.Markdown("## Color images are saved to your Google Drive")
                 with gr.Row():    
                     download_link_batch = gr.File(label="Download ZIP-file",visible=False)
-                with gr.Row():
+        with gr.Row():
             (enchance_enabled_b,faceenchance_preface_b,faceenchance_background_enhance_b,
                 faceenchance_face_upsample_b,faceenchance_fidelity_b,coloring_enabled_b,
                 upscale_b) = workflow()
@@ -394,7 +394,7 @@ with gr.Blocks(title=f"Old Photo Color {version.version}",js=js_func) as demo:
             start_batch=gr.Button(value='Start batch inference')
         start_batch.click((lambda: (gr.update(visible=False),gr.update(visible=False),gr.update(visible=False), gr.update(visible=True), gr.update(interactive=False))),
                     outputs=[download_link_batch,google_batch,file_in,preview,start_batch]) \
-            .then(fn=batch_color,inputs=[file_inenchance_enabled_b,faceenchance_preface_b,
+            .then(fn=batch_color,inputs=[file_in,enchance_enabled_b,faceenchance_preface_b,
                 faceenchance_background_enhance_b,
                 faceenchance_face_upsample_b,faceenchance_fidelity_b,coloring_enabled_b,
                 upscale_b],outputs=preview) \
