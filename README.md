@@ -36,6 +36,15 @@ Once launched, you will see an interface that has 4 tabs.
   </tr>
 </table>
 
+Update log
+
+v2.0
+1. Add Echance Mode
+2.Added selection of downloads (zip or individual files) in Batch Mode
+
+v1.0
+1. First version
+
 All suggestions and questions can be voiced in the [Telegram-group](https://t.me/+xlhhGmrz9SlmYzg6)
 
 ![image](https://github.com/user-attachments/assets/5cf86b6d-e378-4d85-aed1-c48920b6c107)
