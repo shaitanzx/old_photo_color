@@ -125,14 +125,14 @@ def color(image,faceenchance_enabled,face_align,background_enhance,
                 print('\timage size:', img.shape)
 
                 upscale = int(upscale) # convert type to int
-                if upscale > 4: # avoid memory exceeded due to too large upscale
-                    upscale = 4 
-                if upscale > 2 and max(img.shape[:2])>1000: # avoid memory exceeded due to too large img resolution
-                    upscale = 2 
-                if max(img.shape[:2]) > 1500: # avoid memory exceeded due to too large img resolution
-                    upscale = 1
-                    background_enhance = False
-                    face_upsample = False
+                #if upscale > 4: # avoid memory exceeded due to too large upscale
+                #    upscale = 4 
+                #if upscale > 2 and max(img.shape[:2])>1000: # avoid memory exceeded due to too large img resolution
+                #    upscale = 2 
+                #if max(img.shape[:2]) > 1500: # avoid memory exceeded due to too large img resolution
+                #    upscale = 1
+                #    background_enhance = False
+                #    face_upsample = False
 
                 face_helper = FaceRestoreHelper(
                     upscale,
@@ -355,7 +355,7 @@ def clear():
     delete_input(output_path)
 
 def workflow():
-    with gr.Accordion('Workflow', open=False):
+    with gr.Accordion('Workflow', open=False)  as gen_acc:
         with gr.TabItem(label='Enchance'):
             with gr.Row():
                 enchance_enabled = gr.Checkbox(label="Enabled", value=False,interactive=True)
@@ -370,6 +370,13 @@ def workflow():
         with gr.TabItem(label='Coloring'):
             with gr.Row():
                 coloring_enabled = gr.Checkbox(label="Enabled", value=False,interactive=True)
+    def gen_acc_name(enchance, coloring):
+                    main_name = "Workflow" + (f" — {', '.join(filter(None, ['Enchance enabled' if enchance else None, 'Coloring enabled' if coloring else None]))}" if any([enchance, coloring]) else "")
+                    return gr.update(label=main_name)
+    enchance_enabled.change(gen_acc_name,inputs=[enchance_enabled,coloring_enabled],
+                        outputs=[gen_acc],queue=False)
+    coloring_enabled.change(gen_acc_name,inputs=[enchance_enabled,coloring_enabled],
+                        outputs=[gen_acc],queue=False)
 
                 
     return (enchance_enabled,faceenchance_preface,faceenchance_background_enhance,
