@@ -40,7 +40,7 @@ Update log
 
 v2.0
 1. Add Echance Mode
-2.Added selection of downloads (zip or individual files) in Batch Mode
+2. Added selection of downloads (zip or individual files) in Batch Mode
 
 v1.0
 1. First version
