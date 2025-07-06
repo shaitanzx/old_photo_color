@@ -237,15 +237,31 @@ def delete_input(directory):
                 except Exception as e:
                     print(f'Failed to delete {file_path}. Reason: {e}')
             return
-def batch_color(file_in,faceenchance_enabled,face_align,background_enhance,
+def batch_color(file_in,files,enable_zip,faceenchance_enabled,face_align,background_enhance,
                 face_upsample,codeformer_fidelity,coloring_enabled,
                 upscale):
 ##    delete_input('input')                         
     os.makedirs("input", exist_ok=True)
     extract_folder = "input"
-    zip_ref=zipfile.ZipFile(file_in.name, 'r')
-    zip_ref.extractall(extract_folder)
-    zip_ref.close()
+    if enable_zip:
+        zip_ref=zipfile.ZipFile(file_in.name, 'r')
+        zip_ref.extractall(extract_folder)
+        zip_ref.close()
+    else:
+        for file in files:
+           original_name = getattr(file, 'orig_name', os.path.basename(file.name))
+           save_path = os.path.join("input", original_name)
+           try:
+               with open(file.name, 'rb') as src:
+                   with open(save_path, 'wb') as dst:
+                       while True:
+                           chunk = src.read(8192)  # Читаем по 8KB за раз
+                           if not chunk:
+                               break
+                           dst.write(chunk)
+           except Exception as e:
+               print(f"Ошибка при копировании {original_name}: {str(e)}")
+        
     index = 0
     files = sorted(os.listdir(extract_folder))
     while index < len(files):
@@ -383,28 +399,35 @@ with gr.Blocks(title=f"Old Photo Color {version.version}",js=js_func) as demo:
     with gr.Tab(label="Batch"):
         with gr.Row():
             with gr.Column():
-                file_in=gr.File(label='Upload source ZIP-file',show_label=True,file_count='single',file_types=['.zip'],interactive=True) 
-                preview= gr.Image(elem_id="input_image", type='filepath', label="Source Image",visible=False)
+                file_in=gr.File(label='Upload source ZIP-file',show_label=True,file_count='single',file_types=['.zip'],interactive=True,visible=False) 
+                files = gr.Files(label="Drag (Select) 1 or more photos of your face",
+                        file_types=["image"],visible=True,interactive=True)
+                preview= gr.Image(elem_id="input_image", type='filepath', label="Source Image",visible=False)            
             with gr.Column():
                 with gr.Row(visible=False) as google_batch:
                     gr.Markdown("## Color images are saved to your Google Drive")
                 with gr.Row():    
                     download_link_batch = gr.File(label="Download ZIP-file",visible=False)
         with gr.Row():
+                enable_zip = gr.Checkbox(label="Upload ZIP-file", value=False)
+        with gr.Row():
             (enchance_enabled_b,faceenchance_preface_b,faceenchance_background_enhance_b,
                 faceenchance_face_upsample_b,faceenchance_fidelity_b,coloring_enabled_b,
                 upscale_b) = workflow()
         with gr.Row():
             start_batch=gr.Button(value='Start batch inference')
-        start_batch.click((lambda: (gr.update(visible=False),gr.update(visible=False),gr.update(visible=False), gr.update(visible=True), gr.update(interactive=False))),
-                    outputs=[download_link_batch,google_batch,file_in,preview,start_batch]) \
-            .then(fn=batch_color,inputs=[file_in,enchance_enabled_b,faceenchance_preface_b,
+        enable_zip.change(lambda x: (gr.update(visible=x),gr.update(visible=not x)), inputs=enable_zip,
+                                        outputs=[file_in,files], queue=False)
+        start_batch.click((lambda: (gr.update(visible=False),gr.update(visible=False),gr.update(visible=False),gr.update(visible=False), gr.update(visible=True), gr.update(interactive=False))),
+                    outputs=[download_link_batch,google_batch,file_in,files,preview,start_batch]) \
+            .then(fn=batch_color,inputs=[file_in,files,enable_zip,enchance_enabled_b,faceenchance_preface_b,
                 faceenchance_background_enhance_b,
                 faceenchance_face_upsample_b,faceenchance_fidelity_b,coloring_enabled_b,
                 upscale_b],outputs=preview) \
             .then(fn=zip_batch,outputs=[download_link_batch,google_batch,download_link_batch]) \
-            .then((lambda: (gr.update(visible=True), gr.update(visible=False), gr.update(interactive=True))),
-                    outputs=[file_in,preview,start_batch])
+            .then((lambda x: (gr.update(visible=x), gr.update(visible=not x), gr.update(visible=False), gr.update(interactive=True))),
+                    inputs=enable_zip,
+                    outputs=[file_in,files,preview,start_batch])
     with gr.Tab(label="Video"):
         with gr.Row():
             with gr.Column():
