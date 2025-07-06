@@ -237,7 +237,9 @@ def delete_input(directory):
                 except Exception as e:
                     print(f'Failed to delete {file_path}. Reason: {e}')
             return
-def batch_color(file_in):
+def batch_color(file_in,faceenchance_enabled,face_align,background_enhance,
+                face_upsample,codeformer_fidelity,coloring_enabled,
+                upscale):
 ##    delete_input('input')                         
     os.makedirs("input", exist_ok=True)
     extract_folder = "input"
@@ -256,7 +258,10 @@ def batch_color(file_in):
             file_name_recolor = os.path.join(extract_folder, files[index-1])
             print(f"{index} of {len(files)} processing ({files[index-1]})")
             gr.Info(f"{index} of {len(files)} processing ({files[index-1]})")
-            pil_img = Image.fromarray(color(np.array(Image.open(os.path.join(extract_folder, files[index-1])))))
+            pil_img = Image.fromarray(color(np.array(Image.open(os.path.join(extract_folder, files[index-1]))),
+                faceenchance_enabled,face_align,background_enhance,
+                face_upsample,codeformer_fidelity,coloring_enabled,
+                upscale))
             pil_img.save(f"{output_path}/{os.path.splitext(files[index-1])[0]}_{time.strftime('%Y-%m-%d_%H-%M-%S')}.png", optimize=True, compress_level=0)           
             yield file_name_view
 
@@ -265,7 +270,10 @@ def batch_color(file_in):
     file_name_recolor = os.path.join(extract_folder, files[index-1])
     print(f"{index} of {len(files)} processing ({files[index-1]})")
     gr.Info(f"{index} of {len(files)} processing ({files[index-1]})")
-    pil_img = Image.fromarray(color(np.array(Image.open(os.path.join(extract_folder, files[index-1])))))
+    pil_img = Image.fromarray(color(np.array(Image.open(os.path.join(extract_folder, files[index-1]))),
+                faceenchance_enabled,face_align,background_enhance,
+                face_upsample,codeformer_fidelity,coloring_enabled,
+                upscale))
     pil_img.save(f"{output_path}/{os.path.splitext(files[index-1])[0]}_{time.strftime('%Y-%m-%d_%H-%M-%S')}.png", optimize=True, compress_level=0)                          
     yield None
     delete_input('input')
@@ -378,11 +386,18 @@ with gr.Blocks(title=f"Old Photo Color {version.version}",js=js_func) as demo:
                     gr.Markdown("## Color images are saved to your Google Drive")
                 with gr.Row():    
                     download_link_batch = gr.File(label="Download ZIP-file",visible=False)
+                with gr.Row():
+            (enchance_enabled_b,faceenchance_preface_b,faceenchance_background_enhance_b,
+                faceenchance_face_upsample_b,faceenchance_fidelity_b,coloring_enabled_b,
+                upscale_b) = workflow()
         with gr.Row():
             start_batch=gr.Button(value='Start batch inference')
         start_batch.click((lambda: (gr.update(visible=False),gr.update(visible=False),gr.update(visible=False), gr.update(visible=True), gr.update(interactive=False))),
                     outputs=[download_link_batch,google_batch,file_in,preview,start_batch]) \
-            .then(fn=batch_color,inputs=file_in,outputs=preview) \
+            .then(fn=batch_color,inputs=[file_inenchance_enabled_b,faceenchance_preface_b,
+                faceenchance_background_enhance_b,
+                faceenchance_face_upsample_b,faceenchance_fidelity_b,coloring_enabled_b,
+                upscale_b],outputs=preview) \
             .then(fn=zip_batch,outputs=[download_link_batch,google_batch,download_link_batch]) \
             .then((lambda: (gr.update(visible=True), gr.update(visible=False), gr.update(interactive=True))),
                     outputs=[file_in,preview,start_batch])
