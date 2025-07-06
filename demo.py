@@ -134,6 +134,29 @@ def video_google():
     return video_name,gr.update(visible=False),gr.update(visible=True)
 def clear():
     delete_input(output_path)
+def workflow():
+    with gr.Accordion('Workflow', open=False):
+        with gr.TabItem(label='Face Enchance'):
+            with gr.Row():
+                faceenchance_enabled = gr.Checkbox(label="Enabled", value=False)
+            with gr.Row():
+        with gr.Column():
+            faceenchance_preface=gr.Checkbox(value=True, label="Pre_Face_Align")
+            faceenchance_background_enhance=gr.Checkbox(label="Background Enchanced", value=True)
+            faceenchance_face_upsample=gr.Checkbox(label="Face Upsample", value=True)
+        with gr.Column(): 
+            faceenchance_gen_fidelity =gr.Slider(label='Codeformer_Fidelity', minimum=0, maximum=1, value=0.5, step=0.01, info='0 for better quality, 1 for better identity (default=0.5)')
+        with gr.TabItem(label='Coloring'):
+            with gr.Row():
+                coloring_enabled = gr.Checkbox(label="Enabled", value=False)
+        with gr.TabItem(label='Upscale'):
+            with gr.Row():
+                upscale_enabled = gr.Checkbox(label="Enabled", value=False)
+                upscale = gr.Slider(label='Upscale', minimum=1.0, maximum=4.0, step=1.0, value=1,interactive=True)
+    return faceenchance_enabled,faceenchance_preface,faceenchance_background_enhance,
+            faceenchance_face_upsample,faceenchance_gen_fidelity,coloring_enabled,upscale_enabled,upscale
+
+
 
 with gr.Blocks(title=f"Old Photo Color {version.version}",js=js_func) as demo:
     gr.Markdown(HEADER_MD)
@@ -142,6 +165,10 @@ with gr.Blocks(title=f"Old Photo Color {version.version}",js=js_func) as demo:
         with gr.Row():
             image1=gr.Image(label='Source image',type='numpy')
             image2=gr.Image(label='Output image',type='numpy',format="png")
+        with gr.Row():
+            (faceenchance_enabled,faceenchance_preface,faceenchance_background_enhance,
+                faceenchance_face_upsample,faceenchance_gen_fidelity,coloring_enabled,
+                upscale_enabled,upscale) = workflow()
         with gr.Row():
             start_single=gr.Button(value='Start single inference')
         start_single.click(fn=color,inputs=image1,outputs=image2)
