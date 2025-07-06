@@ -17,7 +17,8 @@ Here you can choose where the processed images will be saved - Google Disk or Go
 
 Once launched, you will see an interface that has 4 tabs.
 
-![image](https://github.com/user-attachments/assets/be7fcc06-98ce-4539-bafb-f609d9846183)
+![image](https://github.com/user-attachments/assets/b0eb6257-0903-4193-b41a-4d2356bb81cd)
+
 
 **Single** - Designed to work with single files.
 
@@ -26,6 +27,8 @@ Once launched, you will see an interface that has 4 tabs.
 **Video** - Designed for working with video files. You will get a file WITHOUT an audio track.
 
 **Clear output folder** - Clears the output folder, regardless of where it is located. Be very careful.
+
+**Workflow** - The panel for enabling Enhance and Coloring modes and setting them up.
 
 <table>
   <tr>
