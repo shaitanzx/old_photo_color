@@ -19,14 +19,15 @@ import torch
 import torch.nn.functional as F
 from torchvision.transforms.functional import normalize
 from typing import List, Union, Dict, Set, Tuple
-from Codeformer.basicsr.utils import imwrite, img2tensor, tensor2img
-from Codeformer.basicsr.utils.download_util import load_file_from_url
-from Codeformer.facelib.utils.face_restoration_helper import FaceRestoreHelper
-from Codeformer.basicsr.archs.rrdbnet_arch import RRDBNet
-from Codeformer.basicsr.utils.realesrgan_utils import RealESRGANer
-from Codeformer.facelib.utils.misc import is_gray
+sys.path.append(os.path.abspath('CodeFormer'))
+from basicsr.utils import imwrite, img2tensor, tensor2img
+from basicsr.utils.download_util import load_file_from_url
+from facelib.utils.face_restoration_helper import FaceRestoreHelper
+from basicsr.archs.rrdbnet_arch import RRDBNet
+from basicsr.utils.realesrgan_utils import RealESRGANer
+from facelib.utils.misc import is_gray
 
-from Codeformer.basicsr.utils.registry import ARCH_REGISTRY
+from basicsr.utils.registry import ARCH_REGISTRY
 
 
 
@@ -61,6 +62,26 @@ js_func="""
             document.body.classList.toggle('dark');
         }
         """
+def set_realesrgan():
+    half = True if torch.cuda.is_available() else False
+    model = RRDBNet(
+        num_in_ch=3,
+        num_out_ch=3,
+        num_feat=64,
+        num_block=23,
+        num_grow_ch=32,
+        scale=2,
+    )
+    upsampler = RealESRGANer(
+        scale=2,
+        model_path="CodeFormer/weights/realesrgan/RealESRGAN_x2plus.pth",
+        model=model,
+        tile=400,
+        tile_pad=40,
+        pre_pad=0,
+        half=half,
+    )
+    return upsampler
 def get_image(input_data: Union[list, np.ndarray]) -> np.ndarray:
     if isinstance(input_data, (list, tuple)) and len(input_data) > 0:        
         return input_data[0],True
@@ -70,7 +91,6 @@ def get_image(input_data: Union[list, np.ndarray]) -> np.ndarray:
 def color(image,faceenchance_enabled,face_align,background_enhance,
                 face_upsample,codeformer_fidelity,coloring_enabled,
                 upscale):
-    yield image
     if faceenchance_enabled:
         codeform_array=[]
         upsampler = set_realesrgan()
@@ -199,8 +219,6 @@ def color(image,faceenchance_enabled,face_align,background_enhance,
         except Exception as error:
                 print('Global exception', error)
                 return None, None
-
-    yield image
     if coloring_enabled:
         rgb_image = image[..., ::-1] if image.shape[-1] == 3 else image
         output = img_colorization(rgb_image)
@@ -327,7 +345,7 @@ def workflow():
 
                 
     return (enchance_enabled,faceenchance_preface,faceenchance_background_enhance,
-            faceenchance_face_upsample,faceenchance_gen_fidelity,coloring_enabled,upscale)
+            faceenchance_face_upsample,faceenchance_fidelity,coloring_enabled,upscale)
 
 
 
@@ -345,9 +363,9 @@ with gr.Blocks(title=f"Old Photo Color {version.version}",js=js_func) as demo:
         with gr.Row():
             start_single=gr.Button(value='Start single inference')
         start_single.click(lambda: (gr.update(interactive=False)),outputs=start_single) \
-            .then(fn=color,inputs=[image1,faceenchance_enabled,faceenchance_preface,
+            .then(fn=color,inputs=[image1,enchance_enabled,faceenchance_preface,
                             faceenchance_background_enhance,faceenchance_face_upsample,
-                            faceenchance_fidelity,coloring_enabled,upscale]),
+                            faceenchance_fidelity,coloring_enabled,upscale],
                             outputs=image2) \
             .then(lambda: (gr.update(interactive=True)),outputs=start_single)
     with gr.Tab(label="Batch"):
