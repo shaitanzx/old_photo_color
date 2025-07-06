@@ -39,7 +39,7 @@ Once launched, you will see an interface that has 4 tabs.
 Update log
 
 v2.0
-1. Add Echance Mode
+1. Add Enchance Mode
 2. Added selection of downloads (zip or individual files) in Batch Mode
 
 v1.0
