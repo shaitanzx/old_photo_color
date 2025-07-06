@@ -356,7 +356,7 @@ def clear():
 
 def workflow():
     with gr.Accordion('Workflow', open=False)  as gen_acc:
-        with gr.TabItem(label='Enchance'):
+        with gr.TabItem(label='Enhance'):
             with gr.Row():
                 enchance_enabled = gr.Checkbox(label="Enabled", value=False,interactive=True)
             with gr.Row():
@@ -371,7 +371,7 @@ def workflow():
             with gr.Row():
                 coloring_enabled = gr.Checkbox(label="Enabled", value=False,interactive=True)
     def gen_acc_name(enchance, coloring):
-                    main_name = "Workflow" + (f" — {', '.join(filter(None, ['Enchance enabled' if enchance else None, 'Coloring enabled' if coloring else None]))}" if any([enchance, coloring]) else "")
+                    main_name = "Workflow" + (f" — {', '.join(filter(None, ['Enhance enabled' if enchance else None, 'Coloring enabled' if coloring else None]))}" if any([enchance, coloring]) else "")
                     return gr.update(label=main_name)
     enchance_enabled.change(gen_acc_name,inputs=[enchance_enabled,coloring_enabled],
                         outputs=[gen_acc],queue=False)
