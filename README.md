@@ -40,7 +40,7 @@ Update log
 
 v2.0
 1. Add Enhance Mode
-2. Added selection of downloads (zip or individual files) in Batch Mode
+2. Added selection of uploads (zip or individual files) in Batch Mode
 3. Added a panel for enabling Enhance and Coloring modes and setting them up.
 
 v1.0
