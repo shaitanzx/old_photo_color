@@ -290,7 +290,9 @@ def zip_batch():
         file_path = os.path.join(current_dir, "outputs.zip")
         return file_path, gr.update(visible=False), gr.update(visible=True)
     return None, gr.update(visible=True), gr.update(visible=False)
-def batch_video(video):
+def batch_video(video,faceenchance_enabled,face_align,background_enhance,
+                face_upsample,codeformer_fidelity,coloring_enabled,
+                upscale):
     global video_name
                         
     os.makedirs("frames", exist_ok=True)
@@ -302,7 +304,9 @@ def batch_video(video):
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     for i in range(total_frames):
         ret, frame = cap.read()
-        cv2.imwrite(f'frames/frame_{i:06d}.png', cv2.cvtColor(color(frame), cv2.COLOR_BGR2RGB))
+        cv2.imwrite(f'frames/frame_{i:06d}.png', cv2.cvtColor(color(frame,faceenchance_enabled,face_align,
+                background_enhance,face_upsample,codeformer_fidelity,coloring_enabled,
+                upscale), cv2.COLOR_BGR2RGB))
         yield f'Saved color frame number {i+1} of {total_frames} from videofile'
     cap.release()
 
@@ -413,10 +417,17 @@ with gr.Blocks(title=f"Old Photo Color {version.version}",js=js_func) as demo:
                 with gr.Row():
                     download_link_video = gr.File(label="Download videofile",visible=False)
         with gr.Row():
+            (enchance_enabled_v,faceenchance_preface_v,faceenchance_background_enhance_v,
+                faceenchance_face_upsample_v,faceenchance_fidelity_v,coloring_enabled_v,
+                upscale_v) = workflow()
+        with gr.Row():
             start_video=gr.Button(value='Start video inference')   
         start_video.click((lambda: (gr.update(visible=False),gr.update(visible=False),gr.update(visible=True),gr.update(interactive=False))),
                     outputs=[google_video,download_link_video,progress_video,start_video]) \
-            .then(fn=batch_video,inputs=file_video,outputs=progress_video) \
+            .then(fn=batch_video,inputs=[file_video,enchance_enabled_v,faceenchance_preface_v,
+                faceenchance_background_enhance_v,
+                faceenchance_face_upsample_v,faceenchance_fidelity_v,coloring_enabled_v,
+                upscale_v],outputs=progress_video) \
             .then(fn=video_google,outputs=[download_link_video,google_video,download_link_video]) \
             .then(lambda: (gr.update(interactive=True)),outputs=start_video)  
     with gr.Tab(label="Clear output folder"):
