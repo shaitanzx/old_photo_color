@@ -406,9 +406,9 @@ with gr.Blocks(title=f"Old Photo Color {version.version}",js=js_func) as demo:
     with gr.Tab(label="Batch"):
         with gr.Row():
             with gr.Column():
-                file_in=gr.File(label='Upload source ZIP-file',show_label=True,file_count='single',file_types=['.zip'],interactive=True,visible=False) 
+                file_in=gr.File(label='Upload source ZIP-file',show_label=True,file_count='single',file_types=['.zip'],interactive=True,visible=False,height=268) 
                 files = gr.Files(label="Drag (Select) 1 or more photos of your face",
-                        file_types=["image"],visible=True,interactive=True)
+                        file_types=["image"],visible=True,interactive=True,height=268)
                 preview= gr.Image(elem_id="input_image", type='filepath', label="Source Image",visible=False)            
             with gr.Column():
                 with gr.Row(visible=False) as google_batch:
